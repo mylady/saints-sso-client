@@ -93,7 +93,8 @@ SSOClient.prototype.getUserInfo = function () {
     var self = this;
     return function (req, res, next) {
         if(!req.session.token){
-            res.status(400).send('Not authorized');
+            var err = new Error('Not authorized');
+            next(err);
         }else{
             httpHelper(self,self.userInfo+'?access_token='+req.session.token,function(err,data){
                 if(err){
