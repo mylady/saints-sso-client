@@ -1,6 +1,6 @@
 {
   "name": "saints-sso-client-nodejs",
-  "version": "1.0.18",
+  "version": "1.0.19",
   "description": "nodejs client for saints-sso",
   "main": "index.js",
   "scripts": {
