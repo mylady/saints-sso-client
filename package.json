@@ -1,12 +1,12 @@
 {
-  "name": "saints-sso-client",
-  "version": "1.0.17",
+  "name": "saints-sso-client-nodejs",
+  "version": "1.0.18",
   "description": "nodejs client for saints-sso",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "home":"https://github.com/mylady/saints-sso-client",
+  "home":"https://github.com/mylady/saints-sso-client-nodejs",
   "author": "mylady",
   "license": "Apache2 License"
 }
