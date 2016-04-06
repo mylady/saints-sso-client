@@ -4,9 +4,10 @@
  * express-session
  */
 'use strict';
-var http = require('http');
-var url = require('url');
-var util = require('util');
+var http = require('http')
+    , url = require('url')
+    , util = require('util')
+    , querystring = require('querystring');
 
 function SSOClient(config) {
     if (!(this instanceof SSOClient)) {
@@ -37,9 +38,9 @@ function SSOClient(config) {
     this.authProxyLogin = this.authBase + '/proxylogin';
     this.authProxyToken = this.authBase + '/proxylogin/proxytoken';
     this.userInfo = this.authResource + '/userinfo';
-    this.nativeLogin = this.config.loginUri?true:false;
+    this.nativeLogin = this.config.loginUri ? true : false;
     this.loginUri = this.config.loginUri;
-    this.ssoLoginUri = this.authBase + '/login'+'?client_id='+this.clientId+'&redirect_uri='+this.redirectUri;
+    this.ssoLoginUri = this.authBase + '/login' + '?client_id=' + this.clientId + '&redirect_uri=' + this.redirectUri;
     this.logoutUri = this.authBase + '/logout';
     this.loginPath = this.config.loginUri ? url.parse(this.config.loginUri).pathname : null;
 }
@@ -73,9 +74,9 @@ SSOClient.prototype.hijackRequest = function () {
                 validateToken(self, req.session.token, function (err) {
                     if (err) {
                         req.session.token = null;
-                        if(self.nativeLogin){
+                        if (self.nativeLogin) {
                             res.redirect(self.loginUri);
-                        }else{
+                        } else {
                             res.redirect(self.ssoLoginUri);
                         }
                     } else {
@@ -83,9 +84,9 @@ SSOClient.prototype.hijackRequest = function () {
                     }
                 });
             } else {
-                if(self.nativeLogin){
+                if (self.nativeLogin) {
                     next();
-                }else{
+                } else {
                     res.redirect(self.ssoLoginUri);
                 }
             }
@@ -120,19 +121,19 @@ SSOClient.prototype.hijackRequest = function () {
 
 function getCode(ssoClient, res) {
     console.log(ssoClient.authProxyLogin + '?client_id=' + ssoClient.clientId +
-    '&redirect_uri=' + ssoClient.redirectUri +
-    '&login_uri=' + (ssoClient.nativeLogin?escape(ssoClient.loginUri):escape(ssoClient.ssoLoginUri)));
+        '&redirect_uri=' + ssoClient.redirectUri +
+        '&login_uri=' + (ssoClient.nativeLogin ? querystring.escape(ssoClient.loginUri) : querystring.escape(ssoClient.ssoLoginUri)));
 
     res.redirect(ssoClient.authProxyLogin + '?client_id=' + ssoClient.clientId +
         '&redirect_uri=' + ssoClient.redirectUri +
-        '&login_uri=' + (ssoClient.nativeLogin?escape(ssoClient.loginUri):escape(ssoClient.ssoLoginUri)));
+        '&login_uri=' + (ssoClient.nativeLogin ? querystring.escape(ssoClient.loginUri) : querystring.escape(ssoClient.ssoLoginUri)));
 }
 
 function getToken(ssoClient, req, res) {
     res.redirect(ssoClient.authProxyToken + '?grant_type=authorization_code&code=' + req.query.code +
         '&client_id=' + ssoClient.clientId +
         '&client_secret=' + ssoClient.clientSecret +
-        '&redirect_uri=' + escape(ssoClient.redirectUri));
+        '&redirect_uri=' + querystring.escape(ssoClient.redirectUri));
 }
 
 function validateToken(ssoClient, token, done) {
@@ -180,7 +181,7 @@ SSOClient.prototype.logout = function (hasNext) {
                     if (hasNext) {
                         next();
                     } else {
-                        res.redirect(self.nativeLogin?self.loginUri:self.ssoLoginUri);
+                        res.redirect(self.nativeLogin ? self.loginUri : self.ssoLoginUri);
                     }
                 }
             })
