@@ -15,21 +15,21 @@ function SSOClient(config) {
 
     this.config = config || {};
 
-    if (!config.authHost) throw new Error('Need auth server host');
-    if (!config.authPort) throw new Error('Need auth port');
-    if (typeof(config.authPort) !== 'number') throw new Error('Auth port must be number');
-    if (!config.clientId) throw new Erro('Need register client id');
-    if (!config.clientSecret) throw new Error('Need register client secret key');
-    if (!config.redirectUri) throw new Error('Need uri after successfully login redirection');
-    if (!config.filterPaths) throw new Error('Need filter pahts');
-    if (!util.isArray(config.filterPaths)) throw new Error('Filter paths must be array');
-    if (config.filterPaths.length == 0)  throw new Error('Need at least the one path to filter');
-    this.authHost = config.authHost;
-    this.authPort = config.authPort;
-    this.clientId = config.clientId;
-    this.clientSecret = config.clientSecret;
-    this.redirectUri = config.redirectUri;
-    this.filterPaths = config.filterPaths;
+    if (!this.config.authHost) throw new Error('Need auth server host');
+    if (!this.config.authPort) throw new Error('Need auth port');
+    if (typeof(this.config.authPort) !== 'number') throw new Error('Auth port must be number');
+    if (!this.config.clientId) throw new Erro('Need register client id');
+    if (!this.config.clientSecret) throw new Error('Need register client secret key');
+    if (!this.config.redirectUri) throw new Error('Need uri after successfully login redirection');
+    if (!this.config.filterPaths) throw new Error('Need filter pahts');
+    if (!util.isArray(this.config.filterPaths)) throw new Error('Filter paths must be array');
+    if (this.config.filterPaths.length == 0)  throw new Error('Need at least the one path to filter');
+    this.authHost = this.config.authHost;
+    this.authPort = this.config.authPort;
+    this.clientId = this.config.clientId;
+    this.clientSecret = this.config.clientSecret;
+    this.redirectUri = this.config.redirectUri;
+    this.filterPaths = this.config.filterPaths;
     this.authBase = 'http://' + this.authHost + ':' + this.authPort + '/oauth';
     this.authValidate = this.authBase + '/v';
     this.authResource = this.authBase + '/p';
@@ -37,11 +37,11 @@ function SSOClient(config) {
     this.authProxyLogin = this.authBase + '/proxylogin';
     this.authProxyToken = this.authBase + '/proxylogin/proxytoken';
     this.userInfo = this.authResource + '/userinfo';
-    this.nativeLogin = config.loginUri?true:false;
-    this.loginUri = config.loginUri;
+    this.nativeLogin = this.config.loginUri?true:false;
+    this.loginUri = this.config.loginUri;
     this.ssoLoginUri = this.authBase + '/login'+'?client_id='+this.clientId+'&redirect_uri='+this.redirectUri;
     this.logoutUri = this.authBase + '/logout';
-    this.loginPath = config.loginUri ? url.parse(config.loginUri).pathname : null;
+    this.loginPath = this.config.loginUri ? url.parse(this.config.loginUri).pathname : null;
 }
 
 SSOClient.prototype.hijackRequest = function () {
@@ -119,7 +119,6 @@ SSOClient.prototype.hijackRequest = function () {
 
 
 function getCode(ssoClient, res) {
-
     console.log(ssoClient.authProxyLogin + '?client_id=' + ssoClient.clientId +
     '&redirect_uri=' + ssoClient.redirectUri +
     '&login_uri=' + (ssoClient.nativeLogin?escape(ssoClient.loginUri):escape(ssoClient.ssoLoginUri)));
@@ -210,7 +209,7 @@ function httpHelper(ssoClient, path, done) {
         }
     });
     req.end();
-};
+}
 
 module.exports = SSOClient;
 
