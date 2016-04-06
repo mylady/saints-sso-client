@@ -211,5 +211,6 @@ function httpHelper(ssoClient, path, done) {
     req.end();
 }
 
+module.exports.hello = '1'
 module.exports = SSOClient;
 
