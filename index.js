@@ -60,13 +60,13 @@ SSOClient.prototype.hijackRequest = function () {
                     validateToken(self, req.session.token, function (err) {
                         if (err) {
                             req.session.token = null;
-                            getCode(self, res);
+                            getCode(self, res, req.xhr);
                         } else {
                             next();
                         }
                     });
                 } else {
-                    getCode(self, res);
+                    getCode(self, res, req.xhr);
                 }
             }
         } else if (self.loginPath && req.path == self.loginPath) {
@@ -103,13 +103,13 @@ SSOClient.prototype.hijackRequest = function () {
                     validateToken(self, req.session.token, function (err) {
                         if (err) {
                             req.session.token = null;
-                            getCode(self, res);
+                            getCode(self, res, req.xhr);
                         } else {
                             next();
                         }
                     });
                 } else {
-                    getCode(self, res);
+                    getCode(self, res, req.xhr);
                 }
             } else {
                 next();
@@ -119,14 +119,16 @@ SSOClient.prototype.hijackRequest = function () {
 };
 
 
-function getCode(ssoClient, res) {
-    console.log(ssoClient.authProxyLogin + '?client_id=' + ssoClient.clientId +
-        '&redirect_uri=' + ssoClient.redirectUri +
-        '&login_uri=' + (ssoClient.nativeLogin ? querystring.escape(ssoClient.loginUri) : querystring.escape(ssoClient.ssoLoginUri)));
-
-    res.redirect(ssoClient.authProxyLogin + '?client_id=' + ssoClient.clientId +
-        '&redirect_uri=' + ssoClient.redirectUri +
-        '&login_uri=' + (ssoClient.nativeLogin ? querystring.escape(ssoClient.loginUri) : querystring.escape(ssoClient.ssoLoginUri)));
+function getCode(ssoClient, res, isXhr) {
+    if (isXhr) {
+        res.status(403).json({
+            error:'not authorized'
+        });
+    } else {
+        res.redirect(ssoClient.authProxyLogin + '?client_id=' + ssoClient.clientId +
+            '&redirect_uri=' + ssoClient.redirectUri +
+            '&login_uri=' + (ssoClient.nativeLogin ? querystring.escape(ssoClient.loginUri) : querystring.escape(ssoClient.ssoLoginUri)));
+    }
 }
 
 function getToken(ssoClient, req, res) {
